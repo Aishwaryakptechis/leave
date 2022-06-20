@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password, check_password
 from secrets import token_hex
 import datetime
-
+from django.utils import timezone
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -39,7 +39,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if (password):
             validated_data['password'] = make_password(password)
             validated_data['token'] = token_hex(30)
-            validated_data['token_expires_at'] = datetime.datetime.now() + datetime.timedelta(days=7)
+            validated_data['token_expires_at'] = timezone.now() + datetime.timedelta(days=7)
 
         return super(UserUpdateSerializer, self).update(instance, validated_data)
 
@@ -62,8 +62,7 @@ class AddUserSerializer(serializers.ModelSerializer):
 
         # Create a token
         validated_data['token'] = token_hex(30)
-        validated_data['token_expires_at'] = datetime.datetime.now(
-        ) + datetime.timedelta(days=7)
+        validated_data['token_expires_at'] = timezone.now() + datetime.timedelta(days=7)
 
         return super().create(validated_data)
 
@@ -89,8 +88,7 @@ class UserSignInSerializer(serializers.ModelSerializer):
             # Token
             user[0].token = token_hex(30)
             # Token expires after 7 days
-            user[0].token_expires_at = datetime.datetime.now() + \
-                datetime.timedelta(days=7)
+            user[0].token_expires_at = timezone.now() + datetime.timedelta(days=7)
             user[0].save()
 
             # Return user information

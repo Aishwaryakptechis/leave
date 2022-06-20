@@ -102,8 +102,3 @@ LEAVE_STATUS = (
     ('approved', 'Approved'),
     ('rejected','Rejected')
 )
-
-LEAVE_PERMISSION = {
-    'member': [],
-    'coordinator': ['req_modification', 'forwarded'],
-}

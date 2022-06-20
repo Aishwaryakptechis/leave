@@ -1,9 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
-import datetime
 from .models import User
-
+from django.utils import timezone
 
 # Add this mixin to the login-required class.
 class CustomLoginRequiredMixin():
@@ -18,7 +17,7 @@ class CustomLoginRequiredMixin():
             return response
 
         token = request.headers['Authorization']
-        now = datetime.datetime.now()
+        now = timezone.now()
         login_user = User.objects.filter(token=token, token_expires_at__gt=now)
         if len(login_user) == 0:
             response = Response(

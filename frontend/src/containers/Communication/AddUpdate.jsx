@@ -1,48 +1,49 @@
-import { Grid, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import { Typography } from '@mui/material';
+import { useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import CustomTextArea from '../../components/form/CustomTextArea';
+import { Grid, Stack } from '@mui/material';
+
+import CustomTextField from '../../components/form/CustomTextField';
+import CustomSelect from '../../components/form/CustomSelect';
 import CustomButton from '../../components/form/CustomButton';
+import { useEffect } from 'react';
+import communicationsRequest from '../../requests/communications-request';
+import taskRequest from '../../requests/task-request';
+import userRequest from '../../requests/user-request';
 import CustomSearchSelect from '../../components/form/CustomSearchSelect';
 import CustomDateTimePicker from '../../components/form/CustomDateTimePicker';
 import CustomLoadingButton from '../../components/form/CustomLoadingButton';
-import CustomSelect from '../../components/form/CustomSelect';
-import CustomTextField from '../../components/form/CustomTextField';
-import { targetStatusOption, targetTypeOption } from '../../constants';
-import targetRequest from '../../requests/target-request';
-import userRequest from '../../requests/user-request';
 
-const AddUpdate = () => {
+import { communicationTypeOption, scoreOption } from '../../constants';
+import Score from './Score';
+
+const AddUpdate = (toggleDrawer, open) => {
     const history = useHistory();
-    const { id } = useParams();
+    let { id } = useParams();
     const [isLoading, setIsLoading] = useState(!!id);
+    const [errors, setErrors] = useState([]);
     const [userOptions, setUserOptions] = useState([]);
 
-    const [target, setTargets] = useState({
-        user_id: { key: '', value: '' },
-        status: '',
-        type: '',
-        note: '',
-        target_number: '0',
-        cohort: '',
-        project_start_date: null,
-        project_due_date: null,
-        project_name: '',
-        project_github_link: '',
-        project_student_name: ''
-    });
+    const [engineerNameOption, setEngineerNameOption] = useState([]);
+    const [typeOption, setTypeOption] = useState([]);
+    const [studentNameOption, setStudentNameOption] = useState([]);
 
-    const [errors, setErrors] = useState([]);
+    const [communication, setCommunication] = useState({
+        reviewed_by: { key: '', value: '' },
+        date_reviewed: ''
+    });
+    const [communicationField, setCommunicationField] = useState({
+        communication_type: '',
+        attribute_of_communication: ''
+    });
 
     useEffect(() => {
         if (id) {
-            targetRequest.find(id).then(res => {
-                setTargets({
+            communicationsRequest.find(id).then(res => {
+                setCommunication({
                     ...res,
-                    user_id: res.user_id ? { key: res.user_id.id, value: res.user_id.name } : null
+                    reviewed_by: res.reviewed_by ? { key: res.reviewed_by.id, value: res.reviewed_by.name } : null
                 });
-
                 setIsLoading(false);
                 let userOpt = res.user
                     ? [
@@ -55,31 +56,20 @@ const AddUpdate = () => {
                 setUserOptions(userOpt);
             });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const handleOnchange = e => {
-        const { name, value } = e.target;
-        setTargets(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const onChangeSearchSelect = (value, name) => {
-        setTargets(prev => ({
+        setCommunication(prev => ({
             ...prev,
             [name]: value
         }));
     };
-
     const getUsers = async filter => {
         userRequest.index(filter).then(res => {
             let newOptions = res.results.length
-                ? res.results.map(option => {
+                ? res.results.map(Option => {
                       return {
-                          key: option.id,
-                          value: option.name
+                          key: Option.id,
+                          value: Option.name
                       };
                   })
                 : [];
@@ -87,7 +77,14 @@ const AddUpdate = () => {
         });
     };
     const onChangeDate = (value, name) => {
-        setTargets(prev => ({
+        setCommunication(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    const handleOnchange = e => {
+        const { name, value } = e.target;
+        setCommunicationField(prev => ({
             ...prev,
             [name]: value
         }));
@@ -96,172 +93,172 @@ const AddUpdate = () => {
     const onSubmit = () => {
         setIsLoading(true);
         if (id) {
-            targetRequest
+            communicationsRequest
                 .update(id, {
-                    ...target,
-                    user_id: target.user_id.key
+                    ...communication,
+                    reviewed_by: communication.reviewed_by.key
                 })
                 .then(() => history.goBack())
                 .catch(err => {
                     setErrors(err.response.data);
                     setIsLoading(false);
+                    console.log('err', err);
                 });
-        } else {
-            targetRequest
-                .store({
-                    ...target,
-                    user_id: target.user_id.key
-                })
-                .then(() => history.goBack())
-                .catch(err => {
-                    setErrors(err.response.data);
-                    setIsLoading(false);
-                });
+                
+        } else{
+            communicationsRequest.store({
+                ...communication, reviewed_by: communication.reviewed_by.key
+            })
+            .then(() => history.goBack())
+            .catch(err => {
+                setErrors(err.response.data);
+                setIsLoading(false)
+            })
         }
     };
 
+    // const stateValue = history.location.state ? history.location.state : null;
+    // const [communication, setCommunication] = useEffect({
+    //     user_id_assigned: stateValue ? stateValue.user_id_assigned : { key: '', value: '' },
+    //     type: stateValue ? stateValue.type : { key: '', value: '' },
+    //     student_name: stateValue ? stateValue.student_name : { key: '', value: '' },
+    //     reviewed_by: { key: '', value: '' }
+    // },[]);
+    // useEffect(() => {
+    //     if (id) {
+    //         communicationsRequest.find(id).then(res => {
+    //             setCommunication({
+    //                 ...res,
+    //                 user_id_assigned: res.task ? { key: res.task.id, value: res.task.name } : { key: '', value: '' },
+    //                 type: res.task ? { key: res.task.id, value: res.task.type } : { key: '', value: '' },
+    //                 session_student_name: res.task
+    //                     ? { key: res.task.id, value: res.task.session_student_name }
+    //                     : { key: '', value: '' },
+    //                 reviewed_by: res.reviewed_by ? { key: res.reviewed_by.id, value: res.reviewed_by.name } : null
+    //             });
+    //             setIsLoading(false);
+    //         });
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
+
+    // const handleOnchange = e => {
+    //     const { name, value } = e.target;
+    //     setCommunication(prev => ({
+    //         ...prev,
+    //         [name]: value
+    //     }));
+    // };
+    // const onChangeSearchSelect = (value, name) => {
+    //     setCommunication(prev => ({
+    //         ...prev,
+    //         [name]: value
+    //     }));
+    // };
+    // const onChangeDate = (value, name) => {
+    //     setCommunication(prev => ({
+    //         ...prev,
+    //         [name]: value
+    //     }));
+    // };
+
+    // const getEngineer = async filter => {
+    //     taskRequest.index(filter).then(res => {
+    //         let newOptions = res.results.length
+    //             ? res.results.map(option => {
+    //                   return {
+    //                       key: option.id,
+    //                       value: option.name
+    //                   };
+    //               })
+    //             : [];
+    //         setEngineerNameOption(newOptions);
+    //     });
+    // };
+
+    // const onSubmit = () => {
+    //     setIsLoading(true);
+    //     if (id) {
+    //         communicationsRequest
+    //             .update(id, {
+    //                 ...communication,
+    //                 user_id_assigned: communication.task.key,
+    //                 type: communication.task.type,
+    //                 student_name: communication.task.session_student_name
+    //             })
+    //             .then(() => history.goBack())
+    //             .catch(err => {
+    //                 setErrors(err.response.data);
+    //                 setIsLoading(false);
+    //             });
+    //     } else {
+    //         communicationsRequest
+    //             .store({
+    //                 ...communication,
+    //                 user_id_assigned: communication.task.key,
+    //                 type: communication.task.type,
+    //                 student_name: communication.task.session_student_name,
+    //             })
+    //             .then(() => history.push('/communication'))
+    //             .catch(err => {
+    //                 setErrors(err.response.data);
+    //                 setIsLoading(false);
+    //             });
+    //     }
+    // };
     return (
         <>
             <Typography variant="h5" gutterBottom component="div" my={2}>
-                {id ? 'Update' : 'Add'} a target
+                {id ? 'Update' : 'Add'} an Score
             </Typography>
             <Grid container spacing={2} marginBottom={2}>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
+                    <CustomSelect label="Student" name="Engineer name" />
+                </Grid>
+                <Grid item xs={3}>
+                    <CustomSelect label="Type" name="type" />
+                </Grid>
+                <Grid item xs={3}>
+                    <CustomSelect label="Student Name" name="student Name" />
+                </Grid>
+                <Grid item xs={3}>
                     <CustomSearchSelect
-                        label="Tutor Name"
-                        name="user_id"
-                        error={!!errors.user_id}
-                        helperText={errors.user_id}
+                        label="Reviewed By"
+                        name="reviewed_by"
+                        errors={!!errors.reviewed_by}
+                        helperText={errors.reviewed_by}
                         availableOptions={userOptions}
-                        selectedValue={target.user_id}
+                        selectedValue={communication.reviewed_by}
                         onChange={onChangeSearchSelect}
                         onTextChange={e => getUsers({ name: e && e.target.value })}
                     />
                 </Grid>
-
-                <Grid item xs={4}>
-                    <CustomSelect
-                        label="Status"
-                        name="status"
-                        error={!!errors.status}
-                        helperText={errors.status}
-                        selectedValue={target.status}
-                        onChange={handleOnchange}
-                        options={targetStatusOption}
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <CustomSelect
-                        label="Type "
-                        name="type"
-                        error={!!errors.type}
-                        helperText={errors.type}
-                        selectedValue={target.type}
-                        onChange={handleOnchange}
-                        options={targetTypeOption}
-                    />
-                </Grid>
             </Grid>
-
-            <Grid container spacing={2} marginBottom={2}>
+            <Grid container spacing={2} marginTop={2}>
                 <Grid item xs={4}>
-                    <CustomTextField
-                        label="Target Count"
-                        name="target_number"
-                        error={!!errors.target_number}
-                        type="number"
-                        helperText={errors.target_number}
-                        value={target.target_number}
-                        onChange={handleOnchange}
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <CustomTextField
-                        name="cohort"
-                        error={!!errors.cohort}
-                        helperText={errors.cohort}
-                        value={target.cohort}
-                        onChange={handleOnchange}
-                        label="Cohort"
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <CustomTextField
-                        name="project_name"
-                        error={!!errors.project_name}
-                        helperText={errors.project_name}
-                        value={target.project_name}
-                        onChange={handleOnchange}
-                        label="Project Name"
-                    />
-                </Grid>
-            </Grid>
-            <Grid container spacing={2} marginBottom={2}>
-                <Grid item xs={2}>
                     <CustomDateTimePicker
-                        name="project_start_date"
-                        label="Start Date"
-                        error={!!errors.project_start_date}
-                        helperText={errors.project_start_date}
-                        value={target.project_start_date}
+                        label="Date Reviewed"
+                        name="date_reviewed"
+                        errors={!!errors.date_reviewed}
+                        helperText={errors.date_reviewed}
+                        value={taskRequest.date_reviewed}
                         onChange={onChangeDate}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                    <CustomDateTimePicker
-                        name="project_due_date"
-                        label="Due Date"
-                        error={!!errors.project_due_date}
-                        helperText={errors.project_due_date}
-                        value={target.project_due_date}
-                        onChange={onChangeDate}
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <CustomTextField
-                        name="project_github_link"
-                        error={!!errors.project_github_link}
-                        helperText={errors.project_github_link}
-                        value={target.project_github_link}
-                        onChange={handleOnchange}
-                        label=" GitHub Link "
-                    />
-                </Grid>
+            </Grid>
+            
+            <Score comm={communicationField} />
 
-                <Grid item xs={4}>
-                    <CustomTextField
-                        name="project_student_name"
-                        label=" Student Name"
-                        error={!!errors.project_student_name}
-                        helperText={errors.project_student_name}
-                        value={target.project_student_name}
-                        onChange={handleOnchange}
-                    />
-                </Grid>
-            </Grid>
-            <Grid container spacing={2} marginBottom={2}>
-                <Grid item xs={12}>
-                    <CustomTextArea
-                        name="note"
-                        error={!!errors.note}
-                        helperText={errors.note}
-                        value={target.note}
-                        placeholder="Note"
-                        onChange={handleOnchange}
-                    />
-                </Grid>
-            </Grid>
-            <Stack spacing={2} direction="row">
+            <Stack spacing={2} direction="col">
                 <CustomLoadingButton
                     onClick={onSubmit}
                     loading={isLoading}
                     variant="contained"
                     text={id ? 'Update' : 'Add'}
-                ></CustomLoadingButton>
+                />
                 <CustomButton text="Cancel" variant="outlined" onClick={() => history.goBack()} />
             </Stack>
         </>
     );
 };
-
 export default AddUpdate;

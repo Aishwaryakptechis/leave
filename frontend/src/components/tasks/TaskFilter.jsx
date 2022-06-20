@@ -107,10 +107,11 @@ const TaskFilter = () => {
                 </Grid>
                 <Grid item xs={3}>
                     <CustomTextField
-                        name="name"
-                        label=" Student Name"
-                        value={queries.name}
+                        name="session_student_name"
+                        label="Student Name"
+                        value={queries.session_student_name}
                         onChange={onChangeHandler}
+
                     />
                 </Grid>
                 <Grid item xs={6}>

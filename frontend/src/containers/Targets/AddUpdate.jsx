@@ -118,6 +118,7 @@ const AddUpdate = () => {
                     setIsLoading(false);
                 });
         }
+         
     };
 
     return (

@@ -28,7 +28,7 @@ export default function TaskTable(props) {
     const hasTasks = tasks && tasks.results && !!tasks.results.length;
     const history = useHistory();
 
-
+console.log('props',props);
     return (
         <>
             {isLoading ? (
@@ -55,6 +55,8 @@ export default function TaskTable(props) {
                                 <StyledTableCell align="center">Video Link</StyledTableCell>
                                 <StyledTableCell align="center">Date</StyledTableCell>
                                 <StyledTableCell align="center">Edit Task</StyledTableCell>
+                                <StyledTableCell align="center">Score</StyledTableCell>
+
 
                             </TableRow>
                         </TableHead>
@@ -98,6 +100,19 @@ export default function TaskTable(props) {
                                             text="Edit"
                                             variant="outlined"
                                         />
+                                        
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <CustomButton
+                                            onClick={() =>
+                                                history.push(`/communication/score/${task.id}`, {
+                                                    id: task.id
+                                                })
+                                            }
+                                            text="Score"
+                                            variant="outlined"
+                                        />
+                                        
                                     </StyledTableCell>
                                 </StyledTableRow>
                             ))}

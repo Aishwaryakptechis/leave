@@ -56,9 +56,10 @@ INSTALLED_APPS = [
     'apps.communications',
     'apps.communication_fields',
     'apps.communication_scores',
+    'apps.member_leaves',
+    'apps.leave_conversations',
     'cloudinary',
     'django_filters',
-    'apps.member_leaves',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +102,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

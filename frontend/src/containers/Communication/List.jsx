@@ -17,6 +17,7 @@ const List = () => {
         type: searchQuery.get('type') || '',
         student_support_type: searchQuery.get('student_support_type') || '',
     });
+    console.log('communications', communications);
     const [querySelect, setQuerySelect] = useState({
         user_id: JSON.parse(searchQuery.get('user_id')) || { value: '', keys: '' },
         review_by: JSON.parse(searchQuery.get('review_by')) || {value: '', keys:''}
@@ -122,7 +123,7 @@ const List = () => {
             })
             .then(response => {
                 if (isSubscribed) {
-                    setCommunications(response);
+                    setCommunications(response.data);
                     setIsLoading(false);
                 }
             });

@@ -7,6 +7,7 @@ import { PublicRoute } from './components/routes/PublicRoute';
 import Home from './containers/Home';
 import Login from './containers/Login';
 import Admins from './containers/Admins/List'
+// import Add from './containers/Admins/AddUpdate'
 import { checkLoginAction } from './reducks/users/actions';
 import { fetchUserFromLocalStorage } from './reducks/users/operations';
 import AuthRequest from './requests/auth-request';
@@ -16,10 +17,8 @@ import Target from './containers/Targets/List'
 import TargetAddUpdate from './containers/Targets/AddUpdate'
 import Update from './containers/Profile/Update';
 import Communication from './containers/Communication/List';
-import CommunicationAddUpdate from './containers/Communication/AddUpdate';
-import Table from './components/communication/CommunicationTable';
-import Leave from './containers/Leave/List';
-import LeaveAddUpdate from './containers/Leave/AddUpdate';
+import CommunicationAddUpdate from './containers/Communication/AddUpdate'
+// import { Table } from '@mui/material';
 
 const Router = () => {
     const dispatch = useDispatch();
@@ -40,6 +39,7 @@ const Router = () => {
             <PublicRoute token={token} component={Login} path={'/login'} exact />
             <PrivateRoute token={token} component={Home} path={'/'} exact />
             <PrivateRoute token={token} component={Admins} path={'/admins'} exact />
+            <PrivateRoute token={token} component={Update} path={'/admins/:action/:id?'} exact />
             <PrivateRoute token={token} component={Update} path={'/profile/:id'} exact />
             <PrivateRoute token={token} component={Task} path={'/task'} exact />
             <PrivateRoute token={token} component={TaskAddUpdate} path={'/task/:action/:id?'} exact />
@@ -47,9 +47,9 @@ const Router = () => {
             <PrivateRoute token={token} component={TargetAddUpdate} path={'/target/:action/:id?'} exact />
             <PrivateRoute token={token} component={Communication} path={'/communication'} exact />
             <PrivateRoute token={token} component={CommunicationAddUpdate} path={'/communication/:action/:id'} exact />
-            <PrivateRoute token={token} component={Table} path={'/communication/table'} exact />
-            <PrivateRoute token={token} component={LeaveAddUpdate} path={'/leave/:action/:id?'} exact />
-            <PrivateRoute token={token} component={Leave} path={'/leave'} exact />
+
+
+
 
         </Switch>
     );

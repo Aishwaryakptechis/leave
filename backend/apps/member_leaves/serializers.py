@@ -12,16 +12,17 @@ class MemberLeaveSerializer(serializers.ModelSerializer):
         fields = ['user','status', 'from_date', 'to_date','message']
         read_only_fields = ['user']
 
+ 
+       
 class MemberLeaveAddSerializer(serializers.ModelSerializer):
     user = UserInfoSerializer(required=False)
 
     class Meta:
         model = MemberLeave
-        fields = ['user','status', 'message', 'subject', 'from_date', 'to_date']
+        fields = ['user','status', 'from_date', 'to_date','message']
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].login_user
-        print(validated_data)
         return super().create(validated_data)
 
 

@@ -1,6 +1,6 @@
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import {LocalizationProvider} from '@mui/x-date-pickers';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
 import PropTypes from 'prop-types';
 import React from 'react';

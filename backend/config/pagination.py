@@ -10,7 +10,6 @@ class CustomizePagination(pagination.PageNumberPagination):
         else: 
             total_pages = self.page.paginator.num_pages
         
-        print("self.page.paginator",self)
         return Response({
             'count': self.page.paginator.count,
             'per_page': DEFAULT_PAGE_SIZE,

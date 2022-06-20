@@ -78,23 +78,17 @@ const Sidebar = ({ toggleDrawer, open }) => {
                     </ListItemIcon>
                     <ListItemText primary="Task" />
                 </ListItem>
-                <ListItem sx={activeClass('/admins')} button onClick={() => history.push('/admins')}>
+                {/* <ListItem sx={activeClass('/admins')} button onClick={() => history.push('/admins')}>
                     <ListItemIcon>
                         <ArticleIcon />
                     </ListItemIcon>
                     <ListItemText primary="Admin" />
-                </ListItem>
+                </ListItem> */}
                 <ListItem sx={activeClass('/communication')} button onClick={() => history.push('/communication')}>
                     <ListItemIcon>
                         <ArticleIcon />
                     </ListItemIcon>
                     <ListItemText primary="Communication" />
-                </ListItem>
-                <ListItem sx={activeClass('/leave')} button onClick={() => history.push('/leave')}>
-                    <ListItemIcon>
-                        <ArticleIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Leave Mangement" />
                 </ListItem>
             </List>
         </Drawer>

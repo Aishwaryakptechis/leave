@@ -1,21 +1,17 @@
-from ast import Not
+from django.db.models import Q
+from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters as search
 from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework import filters as search
-from django_filters import rest_framework as filters
-from apps.communication_scores import serializers
-from apps.communications.serializers import CommunicationSerializer
-from .serializers import TaskListSerializer, TaskSerializer, AddTaskSerializer
-from .models import Task
-from apps.communications.serializers import CheckCommunicationTaskSerializer
-from apps.users.models import User
-from apps.communications.models import Communication
-from apps.users.mixins import CustomLoginRequiredMixin
-from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q
 from apps.communication_fields.models import CommunicationField
 from apps.communication_scores.models import CommunicationScore
+from apps.communications.models import Communication
 from apps.tasks.serializers import TaskShortInfoSerializer
+from apps.users.mixins import CustomLoginRequiredMixin
+
+from .models import Task
+from .serializers import AddTaskSerializer, TaskListSerializer, TaskSerializer
 
 
 class TaskFilter(filters.FilterSet):
@@ -77,15 +73,24 @@ class CheckCommunication(CustomLoginRequiredMixin, generics.RetrieveAPIView, gen
     def get(self, request, *args, **kwargs):
         task = self.get_object()
         serializer = TaskShortInfoSerializer(task)
+        communication_fields = CommunicationField.objects.all()
  
+        # if task don't have communication then we create communication
         if hasattr(task, 'task_communication') == False:
             communication = Communication.objects.create(task=task)
-            communication_fields = CommunicationField.objects.all()
 
             # create CommunicationScores
             for field in communication_fields:
                 CommunicationScore.objects.create(communication=communication, communication_field=field )
 
+        # check communication score is up to date with commnication_fields if not then create new score
+        if hasattr(task, 'task_communication'):
+            field_ids = communication_fields.values_list('id', flat=True)
+            communication = task.task_communication
+            scores = task.task_communication.communication_scores.all().values_list('communication_field', flat=True)
+
+            for id in field_ids:
+                if not id in scores:
+                    CommunicationScore.objects.create(communication=communication, communication_field=CommunicationField.objects.get(pk=id) )
            
-     
         return Response(serializer.data)

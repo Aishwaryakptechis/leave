@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.shortcuts import render
 
 from rest_framework import generics
@@ -25,15 +26,16 @@ class CommunicationFieldList(CustomLoginRequiredMixin, generics.ListAPIView):
     queryset = CommunicationField.objects.all()
     serializer_class = CommunicationFieldListSerializer
 
-    # def get(self, request, *args, **kwargs):
-    #     self.request = CommunicationField.objects.all().order_by('-id')
-    #     if request.login_user.role == 'member' and request.login_user.team not in ['admin']:
-    #         self.queryset = CommunicationField.objects.order_by('-id')
-    #         self.filter_backends = [DjangoFilterBackend, search.SearchFilter]
-    #         self.filter_class = ComunicationFieldFilter
-    #         self.search_fields = ['communication_type']
-
-    #     return Response(self.request)
+    def get(self, request, *args, **kwargs):
+        transactions = CommunicationField.objects.all().values('id', 'communication_type', 'attribute_of_communication')
+        list_result = [entry for entry in transactions]
+        groups = defaultdict(list)
+        
+        for obj in list_result:
+            groups[obj['communication_type']].append(obj)
+        new_list = groups.values()
+        
+        return Response(new_list)
 
 
 class AddCommunicationField(CustomLoginRequiredMixin, generics.CreateAPIView):

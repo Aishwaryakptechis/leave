@@ -21,8 +21,10 @@ urlpatterns = [
     path('users/', include('apps.users.urls')),
     path('tasks/', include('apps.tasks.urls')),
     path('targets/', include('apps.targets.urls')),
+    path('member_leaves/', include('apps.member_leaves.urls')),
+    path('leave_conversations/', include('apps.leave_conversations.urls')),
     path('communications/', include('apps.communications.urls')),
     path('communication_fields/', include('apps.communication_fields.urls')),
     path('communication_scores/', include('apps.communication_scores.urls')),
-    path('member_leaves/', include('apps.member_leaves.urls')),
+
 ]

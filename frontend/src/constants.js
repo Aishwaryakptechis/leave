@@ -109,31 +109,20 @@ export const targetStatusColorOptions = [
     { key: 'delayed', value:colorCode.orange },
     { key: 'failed', value: colorCode.red},
     { key: 'achieved', value: colorCode.green},
-]
-
-export const leaveStatusOptions = [
-    { key: 'applied', value: 'Applied'},
-    { key: 'req_modification', value: 'Request Modification'},
-    { key: 'forwarded', value: 'Forwarded'},
-    { key: 'approved',value: 'Approved' },
-    { key: 'rejected', value: 'Rejected'}
 ];
 
-export const leaveStatusColorOptions = [
-    { key: 'applied', value: colorCode.green },
-    { key: 'req_modification', value: colorCode.blue },
-    { key: 'forwarded', value: colorCode.orange },
-    { key: 'approved',value: colorCode.green },
-    { key: 'rejected', value: colorCode.red }
+export const scoreOption =[
+    {key:'5-excellent', value:'5-Excellent'},
+    {key:'4.5-very good', value:'4.5-Very Good'},
+    {key:'4-good', value:'4-Good'},
+    {key:'3.5-average', value:'3.5-Average'},
+    {key:'3-poor', value:'3-Poor'},
+    {key:'2.5-very poor', value:'2.5-Very Poor'},
+];
+export const communicationTypeOption = [
+    { key: 'critical', value: 'Critical' },
+    { key: 'general', value: 'General'},
+    { key: 'error', value:'Error' },
+   
 ];
 
-export const leaveStatusPermission = {
-    'member': [],
-    'co-ordinator': [{ key: 'req_modification', value: 'Request Modification'}, 
-    { key: 'forwarded', value: 'Forwarded'}],
-    'Director': leaveStatusOptions ,
-    'Manager': leaveStatusOptions,
-    'Leader': leaveStatusOptions,
-    
-
-}

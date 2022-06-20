@@ -7,7 +7,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import * as React from 'react';
 import { useHistory } from 'react-router';
-
 import { } from '../../constants';
 import { getDateFormat, getStatusColor, getValueOption } from '../../utils/common';
 import { StyledTableCell, StyledTableRow } from '../common/StyledTable';
@@ -15,20 +14,22 @@ import CustomButton from '../form/CustomButton';
 import CustomPagination from '../form/CustomPagination';
 
 export default function CommunicationTable(props) {
-    const { communications, page, handlePageChange, isLoading } = props;
-    const totalPage = communications ? communications.total_pages : 0;
-    const perPage = communications ? communications.per_page : 0;
-    const count = communications ? communications.count : 0;
-    const hasCommunications = communications && communications.results && !!communications.results.length;
+    const { communication, page, handlePageChange, isLoading } = props;
+    const totalPage = communication ? communication.total_pages : 0;
+    const perPage = communication ? communication.per_page : 0;
+    const count = communication ? communication.count : 0;
+    const hasCommunication = communication && communication.results && !!communication.results.length;
     const history = useHistory();
-
+    console.log('communication',communication);
+    console.log('props',props);
+    console.log('history',history);
     return (
         <>
             {isLoading ? (
                 <Box sx={{ display: 'flex', margin: '18px', justifyContent: 'center' }}>
                     <CircularProgress />
                 </Box>
-            ) : hasCommunications ? (
+            ) : hasCommunication ? (
                 <TableContainer sx={{ mt: 3 }} component={Paper}>
                     <Table aria-label="customized table">
                         <TableHead>
@@ -42,14 +43,10 @@ export default function CommunicationTable(props) {
                                 <StyledTableCell align="center">Video Link</StyledTableCell>
                                 <StyledTableCell align="center">Reviewed By</StyledTableCell>
                                 <StyledTableCell align="center">Reviewed Date</StyledTableCell>
-                                <StyledTableCell align="center">Review Type</StyledTableCell>
-                                <StyledTableCell align="center">Score</StyledTableCell>
-                                <StyledTableCell align="center"> Comment </StyledTableCell>
                                 <StyledTableCell align="center"> Critical Score (%) </StyledTableCell>
                                 <StyledTableCell align="center"> General Score (%) </StyledTableCell>
                                 <StyledTableCell align="center"> Error Total </StyledTableCell>
-                                <StyledTableCell align="center"> Overall Comment </StyledTableCell>
-                                <StyledTableCell align="center"> Score</StyledTableCell>
+                                <StyledTableCell align="center"> Edit</StyledTableCell>
 
 
 
@@ -57,32 +54,29 @@ export default function CommunicationTable(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {communications.results.map((communication, index) => (
-                                <StyledTableRow key={communication.id}>
+                            {communication.results.map((task, index) => {
+                                console.log('communication', communication);
+                            return(
+                                <StyledTableRow key={task.id}>
                                     <StyledTableCell align="center" component="th" scope="row">
                                         {perPage * (page - 1) + (1 + index)}
                                     </StyledTableCell>
-                                    <StyledTableCell align="center">{communication.user_id.name}</StyledTableCell>
-                                    
-                                    
-                                    <StyledTableCell align="center">{communication.communication_number}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.cohort}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.project_start_date}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.project_due_date}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.project_name}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.project_github_link}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.project_student_name}</StyledTableCell>
-                                    <StyledTableCell align="center">{communication.note}</StyledTableCell>
-
-                                    <StyledTableCell align="center">
-                                        {getDateFormat({ date: communication.created_at })}
-                                    </StyledTableCell>
-
+                                    <StyledTableCell align="center">{task.task.user_id_assigned}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.task.session_student_name}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.task.type}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.task.student_support_type}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.task.duration}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.task.session_video_link}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.reviewed_by}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.date_reviewed}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.critical_total}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.general_total}</StyledTableCell>
+                                    <StyledTableCell align="center">{task.error_total}</StyledTableCell>
                                     <StyledTableCell align="center">
                                         <CustomButton
                                             onClick={() =>
-                                                history.push(`/communication/edit/${communication.id}`, {
-                                                    id: communication.id
+                                                history.push(`/communication/edit/${task.id}`, {
+                                                    id: task.id
                                                 })
                                             }
                                             text="Edit"
@@ -90,7 +84,7 @@ export default function CommunicationTable(props) {
                                         />
                                     </StyledTableCell>
                                 </StyledTableRow>
-                            ))}
+                            )})}
                         </TableBody>
                     </Table>
                     <CustomPagination

@@ -1,4 +1,3 @@
-from doctest import FAIL_FAST
 from django.db import models
 from apps.users.models import User
 from django.db.models.deletion import CASCADE
@@ -15,21 +14,17 @@ class MemberLeave(models.Model):
     )
 
     status = models.CharField(
-        'Leave Status', null=False, blank=False, choices=LEAVE_STATUS, max_length=50
+        'Leave Status', null=False, blank=False, choices=LEAVE_STATUS, max_length=50,default='applied'
     )
 
-    from_date = models.DateTimeField(
-        'Leave From', null=True,blank=True
+    from_date = models.DateField(
+        'Leave From', null=False, blank=False,
     )
-    to_date = models.DateTimeField(
-        'To Date', null=True,blank=True
+    to_date = models.DateField(
+        'To Date', null=False, blank=False,
     )
     message = models.CharField(
-
-        'Subject', null=True, blank=False, max_length=255
-    )
-    subject = models.CharField(
-        'Message', null=True, blank=False, max_length=255
+        'Message', null=True,blank=True, max_length=255
     )
     created_at = models.DateTimeField(
         'Leaves Applied On', null=False, blank=False, auto_now_add=True
@@ -38,3 +33,5 @@ class MemberLeave(models.Model):
     updated_at = models.DateTimeField(
         'Updated At', blank=False, null=False, auto_now=True
     )
+    def __str__(self):
+        return '%s - %s' % (self.user.name, self.message)

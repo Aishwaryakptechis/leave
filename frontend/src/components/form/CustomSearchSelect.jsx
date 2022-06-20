@@ -3,9 +3,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 import useStateCallback from '../../hooks/useStateCallback';
+import taskRequest from '../../requests/task-request';
 
 const CustomSearchSelect = props => {
-    const { label, onChange, name, availableOptions, selectedValue, onTextChange, helperText, error } = props;
+    const { disabled,disableClearable,getOptionDisabled, label, onChange, name, availableOptions, selectedValue, onTextChange, helperText, error } = props;
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useStateCallback(false);
@@ -36,6 +37,8 @@ const CustomSearchSelect = props => {
             id="asynchronous-demo"
             name={name}
             open={open}
+            disableClearable={disableClearable}
+            getOptionDisabled={getOptionDisabled}
             onOpen={() => {
                 setOpen(true);
             }}
@@ -55,6 +58,7 @@ const CustomSearchSelect = props => {
                     {...params}
                     label={label}
                     name={name}
+                    disabled={disabled} 
                     helperText={helperText}
                     error={error}
                     onChange={e => {

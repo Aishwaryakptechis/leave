@@ -45,9 +45,26 @@ class CommunicationSerializer(serializers.ModelSerializer):
         return communication
 
 
+class CommunicationTaskSerializer(serializers.ModelSerializer):
+    user_id_assigned_by = UserInfoSerializer()
+    user_id_assigned = UserInfoSerializer()
+    class Meta:
+        model = Task
+        fields = [
+            'id',
+            'status',
+            'name',
+            'type',
+            'duration',
+            'user_id_assigned_by',
+            'user_id_assigned',
+        ]
+        depth  = 1
+
 class CommunicationFindSerializer(serializers.ModelSerializer):
     communication_scores = CommunicationScoreSerializer(many=True)
     reviewed_by = UserInfoSerializer()
+    task = CommunicationTaskSerializer()
 
     class Meta:
         model = Communication
@@ -83,6 +100,7 @@ class CommunicationUpdateSerializer(serializers.ModelSerializer):
 
 class CheckCommunicationTaskSerializer(serializers.ModelSerializer):
     reviewed_by = UserInfoSerializer()
+    communication_scores = CommunicationScoreSerializer(many=True)
     class Meta:
         model = Communication
         fields = [
@@ -91,6 +109,8 @@ class CheckCommunicationTaskSerializer(serializers.ModelSerializer):
             'general_total',
             'error_total',
             'reviewed_by',
-            'date_reviewed'
+            'date_reviewed',
+            'communication_scores'
+
         ]
         depth = 1

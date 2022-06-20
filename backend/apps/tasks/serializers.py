@@ -73,7 +73,7 @@ class TaskShortInfoSerializer(serializers.ModelSerializer):
             'duration',
             'user_id_assigned_by',
             'user_id_assigned',
-            'task_communication'
+            'task_communication',
         ]
 
         depth = 0
